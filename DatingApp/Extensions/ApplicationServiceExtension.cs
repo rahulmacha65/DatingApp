@@ -19,6 +19,10 @@ namespace DatingApp.Extensions
 
             //adding service for creating JWT token
             services.AddScoped<ITokenSevice, TokenService>();
+            // Created Repository to abstract entity framework.
+            services.AddScoped<IUserRepository, UserRepository>();
+            //AutoMapper to convert DTO to entity and vice versa
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
         }
     }
