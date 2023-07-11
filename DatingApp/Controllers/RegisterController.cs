@@ -44,6 +44,7 @@ namespace DatingApp.Controllers
                 UserName = registerDTO.UserName,
                 Token = _tokenSevice.CreateToken(user),
                 KnownAs = user.KnownAs,
+                Gender = user.Gender,
             };
         }
         private async Task<bool> UserExists(string userName)

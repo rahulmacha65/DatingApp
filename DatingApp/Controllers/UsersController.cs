@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DatingApp.DTOs;
 using DatingApp.Entities;
+using DatingApp.Extensions;
+using DatingApp.HelperClasses;
 using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,9 +25,22 @@ namespace DatingApp.Controllers
             _photoService = photoService;
         }
         [HttpGet]
-        public async Task<ActionResult<List<MemberDto>>> GetUsers()
+        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
-            var users = await _userRepository.GetAllMembersAsync();
+            string userName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userParams.CurrentUserName = userName;
+
+            var currentUser = await _userRepository.GetUserByUsernameAsync(userName);
+
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+            }
+
+            var users = await _userRepository.GetAllMembersAsync(userParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage,
+                users.PageSize,users.TotalCount,users.TotalPages));
             return Ok(users);
         }
 
