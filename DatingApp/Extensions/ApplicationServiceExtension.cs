@@ -29,6 +29,8 @@ namespace DatingApp.Extensions
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             //service to add and delete photos in coudinary
             services.AddScoped<IPhotoService, PhotoService>();
+            //service to update last active status of User
+            services.AddScoped<LogUserActivity>();
             return services;
         }
     }
