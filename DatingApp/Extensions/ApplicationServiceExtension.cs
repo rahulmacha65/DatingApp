@@ -31,6 +31,9 @@ namespace DatingApp.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
             //service to update last active status of User
             services.AddScoped<LogUserActivity>();
+            //service for likes Many to Many relation
+            //user likes many user he also like by many user
+            services.AddScoped<ILikesRepository, LikesRepository>();
             return services;
         }
     }
