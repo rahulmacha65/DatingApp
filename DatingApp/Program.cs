@@ -75,7 +75,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 //Enabling Cors
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("*"));
 
 //Middleware to authorize user
 app.UseAuthentication();

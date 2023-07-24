@@ -34,6 +34,8 @@ namespace DatingApp.Extensions
             //service for likes Many to Many relation
             //user likes many user he also like by many user
             services.AddScoped<ILikesRepository, LikesRepository>();
+            //service to handle message feature
+            services.AddScoped<IMessageRepository, MessageRepository>();
             return services;
         }
     }

@@ -1,4 +1,5 @@
-﻿using DatingApp.Interfaces;
+﻿using DatingApp.Data;
+using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
