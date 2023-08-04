@@ -24,6 +24,7 @@ namespace DatingApp.Controllers
             _mapper = mapper; 
             _photoService = photoService;
         }
+        
         [HttpGet]
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
@@ -43,7 +44,7 @@ namespace DatingApp.Controllers
                 users.PageSize,users.TotalCount,users.TotalPages));
             return Ok(users);
         }
-
+        
         [HttpGet("{userName}")]
         public async Task<ActionResult<MemberDto>> GetUser(string userName)
         {
