@@ -4,6 +4,7 @@ using DatingApp.Extensions;
 using DatingApp.Interfaces;
 using DatingApp.Middleware;
 using DatingApp.Services;
+using DatingApp.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -77,7 +78,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 //Enabling Cors
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("*"));
+app.UseCors(builder => builder.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
 //Middleware to authorize user
 app.UseAuthentication();
@@ -85,6 +86,8 @@ app.UseAuthorization();
 
 //Middleware which decides which controller method we need to go
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 //To add random data to DB programtically
 using var scope = app.Services.CreateScope();

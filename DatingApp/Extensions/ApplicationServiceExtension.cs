@@ -2,6 +2,7 @@
 using DatingApp.HelperClasses;
 using DatingApp.Interfaces;
 using DatingApp.Services;
+using DatingApp.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.Extensions
@@ -36,6 +37,10 @@ namespace DatingApp.Extensions
             services.AddScoped<ILikesRepository, LikesRepository>();
             //service to handle message feature
             services.AddScoped<IMessageRepository, MessageRepository>();
+            //SignalR to provide real-time data to web apps.
+            services.AddSignalR();
+            //singleton makes that service is available for applications wide
+            services.AddSingleton<PresenceTracker>();
             return services;
         }
     }
