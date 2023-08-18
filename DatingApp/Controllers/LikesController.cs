@@ -9,26 +9,25 @@ namespace DatingApp.Controllers
 {
     public class LikesController:BaseApiController
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ILikesRepository _likesRepository;
-        public LikesController(IUserRepository userRepository,ILikesRepository likesRepository)
+        private readonly IUnitOfWork _uow;
+
+        public LikesController(IUnitOfWork uow)
         {
-            _userRepository = userRepository;
-            _likesRepository = likesRepository;
+            _uow = uow;
         }
 
         [HttpPost("{userName}")]
         public async Task<ActionResult> AddLike(string userName)
         {
             int sourceUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name).Value);
-            var likedUser = await _userRepository.GetUserByUsernameAsync(userName);
-            var sourceUser = await _likesRepository.GetUserWithLikes(sourceUserId);
+            var likedUser = await _uow.UserRepository.GetUserByUsernameAsync(userName);
+            var sourceUser = await _uow.LikesRepository.GetUserWithLikes(sourceUserId);
 
             if (likedUser == null) return BadRequest();
 
             if(sourceUser.UserName == userName) return BadRequest("You cannot like yourself");
 
-            var userLike = await _likesRepository.GetUserLike(sourceUserId, likedUser.Id);
+            var userLike = await _uow.LikesRepository.GetUserLike(sourceUserId, likedUser.Id);
 
             if (userLike != null) return BadRequest("You already liked this user");
 
@@ -40,7 +39,7 @@ namespace DatingApp.Controllers
 
             sourceUser.LikedUsers.Add(userLike);
 
-            if (await _userRepository.SaveAllAsync()) return Ok();
+            if (await _uow.Complete()) return Ok();
 
             return BadRequest("Failed to like user");
         }
@@ -49,7 +48,7 @@ namespace DatingApp.Controllers
         public async Task<ActionResult<PagedList<LikeDto>>> GetUserLikes([FromQuery]LikesParams likesParams)
         {
             likesParams.UserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name).Value);
-            var users = await _likesRepository.GetUserLikes(likesParams);
+            var users = await _uow.LikesRepository.GetUserLikes(likesParams);
 
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
                 users.TotalCount, users.TotalPages));
